@@ -1,5 +1,6 @@
 (function () {
   const SESSION_KEY = "jobtracker-session";
+  const API_BASE = "https://job-hunter-backend-five.vercel.app";
 
   function showMessage(message) {
     window.alert(message);
@@ -14,7 +15,7 @@
     if (!sessionId) return;
 
     try {
-      const res = await fetch("/api/auth/session", {
+      const res = await fetch(`${API_BASE}/api/auth/session`, {
         headers: { "X-Session-Id": sessionId },
       });
       if (res.ok) {
@@ -44,7 +45,7 @@
       }
 
       try {
-        const res = await fetch("/api/auth/login", {
+        const res = await fetch(`${API_BASE}/api/auth/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email, password }),
@@ -91,7 +92,7 @@
       }
 
       try {
-        const res = await fetch("/api/auth/signup", {
+        const res = await fetch(`${API_BASE}/api/auth/signup`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ name, email, password }),

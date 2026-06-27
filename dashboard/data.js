@@ -3,6 +3,7 @@
 
 const DataStore = (() => {
   const SESSION_KEY = "jobtracker-session";
+  const API_BASE = "https://job-hunter-backend-five.vercel.app";
 
   function getSessionId() {
     return localStorage.getItem(SESSION_KEY);
@@ -22,7 +23,7 @@ const DataStore = (() => {
     if (sessionId) {
       headers["X-Session-Id"] = sessionId;
     }
-    const res = await fetch(`/api${path}`, { ...options, headers });
+    const res = await fetch(`${API_BASE}/api${path}`, { ...options, headers });
     if (res.status === 204) return null;
     const body = await res.json();
     if (!res.ok) throw new Error(body.error || "Request failed");
