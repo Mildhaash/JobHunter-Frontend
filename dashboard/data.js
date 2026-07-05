@@ -45,6 +45,24 @@ const DataStore = (() => {
   }
 
   // ── Auth ───────────────────────────────────────────────────────────────
+  async function signup(name, email, password) {
+    const data = await api("/auth/signup", {
+      method: "POST",
+      body: JSON.stringify({ name, email, password }),
+    });
+    setSessionId(data.sessionId);
+    return data.user;
+  }
+
+  async function login(email, password) {
+    const data = await api("/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    setSessionId(data.sessionId);
+    return data.user;
+  }
+
   async function logout() {
     try {
       await api("/auth/logout", { method: "POST" });
@@ -116,18 +134,29 @@ const DataStore = (() => {
     URL.revokeObjectURL(url);
   }
 
-  // ── Forwarding ───────────────────────────────────────────────────────
-  async function getForwardingAddress() {
-    return await api("/forwarding/address");
+  // ── Gmail ──────────────────────────────────────────────────────────────
+  async function getGmailStatus() {
+    return await api("/gmail/status");
   }
 
-  async function generateForwardingAddress() {
-    return await api("/forwarding/generate", { method: "POST" });
+  async function connectGmail() {
+    return await api("/gmail/connect");
+  }
+
+  async function syncGmail() {
+    return await api("/gmail/sync", { method: "POST" });
+  }
+
+  async function disconnectGmail() {
+    return await api("/gmail/disconnect", { method: "POST" });
   }
 
   captureOAuthSession();
 
   return {
+    getSessionId,
+    signup,
+    login,
     logout,
     checkSession,
     getApplications,
@@ -138,7 +167,9 @@ const DataStore = (() => {
     getProfile,
     saveProfile,
     exportApplicationsAsJson,
-    getForwardingAddress,
-    generateForwardingAddress,
+    getGmailStatus,
+    connectGmail,
+    syncGmail,
+    disconnectGmail,
   };
 })();
