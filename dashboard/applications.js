@@ -86,10 +86,11 @@ function renderProgressSteps(status) {
 
 function buildCardHtml(app) {
   const appId = app._id || app.id;
+  const aiBadge = app.source === "email" ? '<span class="ai-badge" title="Parsed from email by AI">AI</span>' : "";
   return `
     <div class="card-mobile-top">
       <div class="card-mobile-info">
-        <span class="card-mobile-company">${escapeHtml(app.company)}</span>
+        <span class="card-mobile-company">${escapeHtml(app.company)} ${aiBadge}</span>
         <span class="card-mobile-role">${escapeHtml(app.role)}</span>
         <span class="card-mobile-meta">${escapeHtml(app.location || "\u2014")} &middot; ${formatDate(app.date)}</span>
       </div>
@@ -109,8 +110,9 @@ function buildCardHtml(app) {
 
 function buildRowHtml(app) {
   const appId = app._id || app.id;
+  const aiBadge = app.source === "email" ? '<span class="ai-badge" title="Parsed from email by AI">AI</span>' : "";
   return `
-    <td class="cell-company">${escapeHtml(app.company)}</td>
+    <td class="cell-company">${escapeHtml(app.company)} ${aiBadge}</td>
     <td>${escapeHtml(app.role)}</td>
     <td>${escapeHtml(app.location || "\u2014")}</td>
     <td>${formatDate(app.date)}</td>

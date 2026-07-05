@@ -150,6 +150,30 @@ async function renderDashboard() {
   renderInterviewChart(apps);
 }
 
+async function renderForwardingAddress() {
+  try {
+    const data = await DataStore.getForwardingAddress();
+    const addressEl = document.getElementById("forwardingAddress");
+    if (addressEl) addressEl.textContent = data.address;
+  } catch {
+    const addressEl = document.getElementById("forwardingAddress");
+    if (addressEl) addressEl.textContent = "Could not load address";
+  }
+}
+
+function initCopyButton() {
+  const copyBtn = document.getElementById("copyAddressBtn");
+  if (!copyBtn) return;
+  copyBtn.addEventListener("click", () => {
+    const addressEl = document.getElementById("forwardingAddress");
+    if (!addressEl) return;
+    navigator.clipboard.writeText(addressEl.textContent).then(() => {
+      copyBtn.textContent = "Copied!";
+      setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
+    });
+  });
+}
+
 async function initDashboard() {
   const user = await DataStore.checkSession();
   if (!user) {
@@ -158,6 +182,8 @@ async function initDashboard() {
   }
   await renderNav("dashboard");
   await renderDashboard();
+  await renderForwardingAddress();
+  initCopyButton();
 }
 
 document.addEventListener("DOMContentLoaded", initDashboard);

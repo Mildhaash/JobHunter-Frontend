@@ -116,6 +116,15 @@ const DataStore = (() => {
     URL.revokeObjectURL(url);
   }
 
+  // ── Forwarding ───────────────────────────────────────────────────────
+  async function getForwardingAddress() {
+    return await api("/forwarding/address");
+  }
+
+  async function generateForwardingAddress() {
+    return await api("/forwarding/generate", { method: "POST" });
+  }
+
   captureOAuthSession();
 
   return {
@@ -129,5 +138,7 @@ const DataStore = (() => {
     getProfile,
     saveProfile,
     exportApplicationsAsJson,
+    getForwardingAddress,
+    generateForwardingAddress,
   };
 })();
