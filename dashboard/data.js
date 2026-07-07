@@ -134,21 +134,16 @@ const DataStore = (() => {
     URL.revokeObjectURL(url);
   }
 
-  // ── Gmail / Email Forwarding ─────────────────────────────────────────────
+  // ── Gmail / Email Sync ───────────────────────────────────────────────────
   async function getGmailStatus() {
     return await api("/gmail/status");
   }
 
-  async function connectGmail() {
-    return await api("/gmail/connect", { method: "POST" });
-  }
-
-  async function verifyGmail() {
-    return await api("/gmail/verify", { method: "POST" });
-  }
-
-  async function disconnectGmail() {
-    return await api("/gmail/disconnect", { method: "POST" });
+  async function parseEmail(subject, from, body) {
+    return await api("/gmail/parse", {
+      method: "POST",
+      body: JSON.stringify({ subject, from, body }),
+    });
   }
 
   captureOAuthSession();
@@ -168,8 +163,6 @@ const DataStore = (() => {
     saveProfile,
     exportApplicationsAsJson,
     getGmailStatus,
-    connectGmail,
-    verifyGmail,
-    disconnectGmail,
+    parseEmail,
   };
 })();

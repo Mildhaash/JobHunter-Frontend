@@ -153,32 +153,11 @@ async function renderDashboard() {
 async function renderGmailStatus() {
   try {
     const status = await DataStore.getGmailStatus();
-    const disconnected = document.getElementById("gmailDisconnected");
-    const connected = document.getElementById("gmailConnected");
-    const verifyBanner = document.getElementById("gmailVerifyBanner");
-    const verifyLink = document.getElementById("gmailVerifyLink");
-
-    if (status.connected) {
-      if (disconnected) disconnected.style.display = "none";
-      if (connected) connected.style.display = "block";
-      const addrEl = document.getElementById("forwardingAddress");
-      if (addrEl) addrEl.textContent = status.forwardingAddress;
-      const lastSync = document.getElementById("gmailLastSync");
-      if (lastSync) {
-        lastSync.textContent = status.lastSyncAt
-          ? `Last sync: ${new Date(status.lastSyncAt).toLocaleString()}`
-          : "Last sync: Never";
-      }
-      if (status.verificationUrl && status.gmailStatus !== "verified") {
-        if (verifyBanner) verifyBanner.style.display = "block";
-        if (verifyLink) verifyLink.href = status.verificationUrl;
-      } else {
-        if (verifyBanner) verifyBanner.style.display = "none";
-      }
-    } else {
-      if (disconnected) disconnected.style.display = "block";
-      if (connected) connected.style.display = "none";
-      if (verifyBanner) verifyBanner.style.display = "none";
+    const lastSync = document.getElementById("gmailLastSync");
+    if (lastSync) {
+      lastSync.textContent = status.lastSyncAt
+        ? `Last synced: ${new Date(status.lastSyncAt).toLocaleString()}`
+        : "Last sync: Never";
     }
   } catch {
     // silent
@@ -186,73 +165,54 @@ async function renderGmailStatus() {
 }
 
 function initGmailButtons() {
-  const connectBtn = document.getElementById("gmailConnectBtn");
-  if (connectBtn) {
-    connectBtn.addEventListener("click", async () => {
-      connectBtn.disabled = true;
-      connectBtn.textContent = "Generating...";
+  const parseBtn = document.getElementById("parseEmailBtn");
+  if (parseBtn) {
+    parseBtn.addEventListener("click", async () => {
+      const subject = document.getElementById("emailSubject").value.trim();
+      const from = document.getElementById("emailFrom").value.trim();
+      const body = document.getElementById("emailBody").value.trim();
+      const resultEl = document.getElementById("parseResult");
+
+      if (!body && !subject) {
+        resultEl.textContent = "Please paste an email subject or body";
+        resultEl.style.color = "#e74c3c";
+        return;
+      }
+
+      parseBtn.disabled = true;
+      parseBtn.textContent = "Parsing...";
+      resultEl.textContent = "";
       try {
-        const data = await DataStore.connectGmail();
-        if (data.address) {
+        const result = await DataStore.parseEmail(subject, from, body);
+        if (result.found) {
+          resultEl.textContent = `Added: ${result.application.company} — ${result.application.role}`;
+          resultEl.style.color = "#27ae60";
+          document.getElementById("emailSubject").value = "";
+          document.getElementById("emailFrom").value = "";
+          document.getElementById("emailBody").value = "";
           await renderGmailStatus();
+          await renderDashboard();
+        } else {
+          resultEl.textContent = result.message || "No job application found in this email";
+          resultEl.style.color = "#e67e22";
         }
-      } catch {
-        alert("Failed to generate forwarding address");
+      } catch (err) {
+        resultEl.textContent = "Error: " + (err.message || "Failed to parse");
+        resultEl.style.color = "#e74c3c";
       }
-      connectBtn.disabled = false;
-      connectBtn.textContent = "Get My Forwarding Address";
+      parseBtn.disabled = false;
+      parseBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> Parse &amp; Add';
     });
   }
 
-  const copyBtn = document.getElementById("copyAddressBtn");
-  if (copyBtn) {
-    copyBtn.addEventListener("click", async () => {
-      const addr = document.getElementById("forwardingAddress");
-      if (addr && addr.textContent) {
-        try {
-          await navigator.clipboard.writeText(addr.textContent);
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
-        } catch {
-          const range = document.createRange();
-          range.selectNode(addr);
-          window.getSelection().removeAllRanges();
-          window.getSelection().addRange(range);
-          document.execCommand("copy");
-          window.getSelection().removeAllRanges();
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
-        }
-      }
-    });
-  }
-
-  const confirmVerifyBtn = document.getElementById("gmailConfirmVerifyBtn");
-  if (confirmVerifyBtn) {
-    confirmVerifyBtn.addEventListener("click", async () => {
-      confirmVerifyBtn.disabled = true;
-      confirmVerifyBtn.textContent = "Verifying...";
-      try {
-        await DataStore.verifyGmail();
-        await renderGmailStatus();
-      } catch {
-        alert("Failed to confirm verification");
-      }
-      confirmVerifyBtn.disabled = false;
-      confirmVerifyBtn.textContent = "I've Verified";
-    });
-  }
-
-  const disconnectBtn = document.getElementById("gmailDisconnectBtn");
-  if (disconnectBtn) {
-    disconnectBtn.addEventListener("click", async () => {
-      if (!confirm("Disconnect email forwarding?")) return;
-      try {
-        await DataStore.disconnectGmail();
-        await renderGmailStatus();
-      } catch {
-        alert("Failed to disconnect");
-      }
+  const clearBtn = document.getElementById("clearEmailBtn");
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      document.getElementById("emailSubject").value = "";
+      document.getElementById("emailFrom").value = "";
+      document.getElementById("emailBody").value = "";
+      const resultEl = document.getElementById("parseResult");
+      if (resultEl) resultEl.textContent = "";
     });
   }
 }
