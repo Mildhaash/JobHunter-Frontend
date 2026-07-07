@@ -66,33 +66,56 @@
       </div>
     </section>
 
-    <section class="forwarding-section" aria-label="Gmail AI sync">
+    <section class="forwarding-section" aria-label="Email AI sync">
       <div class="forwarding-card">
         <div class="forwarding-header">
           <div class="forwarding-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
           </div>
           <div>
-            <h3>Gmail AI Sync</h3>
-            <p class="forwarding-subtitle">Connect Gmail to auto-detect job application emails</p>
+            <h3>Email AI Sync</h3>
+            <p class="forwarding-subtitle">Auto-detect job application emails with AI</p>
           </div>
         </div>
         <div class="forwarding-body" id="gmailBody">
           <div id="gmailDisconnected">
-            <p class="forwarding-hint">Connect your Gmail account. AI will automatically scan new emails for job applications and add them to your dashboard.</p>
+            <p class="forwarding-hint">Forward job-related emails to your unique address. AI will automatically parse them and add applications to your dashboard.</p>
             <button class="btn btn-primary" id="gmailConnectBtn" type="button">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:18px;height:18px;vertical-align:middle;margin-right:6px"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>
-              Connect Gmail
+              Get My Forwarding Address
             </button>
           </div>
           <div id="gmailConnected" style="display:none">
+            <div id="gmailVerifyBanner" style="display:none" class="forwarding-verify-banner">
+              <p class="forwarding-hint"><strong>One-time verification needed!</strong></p>
+              <p class="forwarding-hint">Gmail sent a confirmation email. Click the link below to activate forwarding:</p>
+              <a id="gmailVerifyLink" href="#" target="_blank" class="btn btn-primary" style="display:inline-block;margin-bottom:8px">Verify Forwarding Address</a>
+              <p class="forwarding-hint">After clicking, come back and click "I've Verified" below.</p>
+              <button class="btn btn-outline btn-sm" id="gmailConfirmVerifyBtn" type="button">I've Verified</button>
+            </div>
             <div class="gmail-status">
               <span class="gmail-status-dot"></span>
-              <span>Connected as <strong id="gmailEmail"></strong></span>
+              <span>Forwarding active</span>
+            </div>
+            <div class="forwarding-setup">
+              <p class="forwarding-hint"><strong>Your unique forwarding address:</strong></p>
+              <div class="forwarding-address-box">
+                <code id="forwardingAddress" class="forwarding-address"></code>
+                <button class="btn btn-outline btn-sm" id="copyAddressBtn" type="button">Copy</button>
+              </div>
+              <div class="forwarding-steps">
+                <p class="forwarding-hint"><strong>How to set up:</strong></p>
+                <ol class="forwarding-steps-list">
+                  <li>Open Gmail and go to <strong>Settings</strong> &rarr; <strong>See all settings</strong></li>
+                  <li>Click <strong>Filters and Blocked Addresses</strong></li>
+                  <li>Create a filter with keywords like: <code>job application</code>, <code>application received</code>, <code>thank you for applying</code></li>
+                  <li>Check <strong>Forward it to</strong> and paste your address above</li>
+                  <li>Click <strong>Create filter</strong></li>
+                </ol>
+              </div>
             </div>
             <p class="forwarding-hint" id="gmailLastSync">Last sync: Never</p>
             <div class="forwarding-steps">
-              <button class="btn btn-primary" id="gmailSyncBtn" type="button">Sync Now</button>
               <button class="btn btn-outline btn-sm" id="gmailDisconnectBtn" type="button">Disconnect</button>
             </div>
             <p class="forwarding-hint" id="gmailSyncResult" style="margin-top:8px"></p>
