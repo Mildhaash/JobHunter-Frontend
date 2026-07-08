@@ -312,6 +312,7 @@ function handleGmailCallback() {
 }
 
 async function initDashboard() {
+  LoadingOverlay.show("Loading dashboard...");
   const user = await DataStore.checkSession();
   if (!user) {
     window.location.href = "../Homepage/login.html";
@@ -322,6 +323,7 @@ async function initDashboard() {
   await renderDashboard();
   await renderGmailStatus();
   initGmailButtons();
+  LoadingOverlay.hide();
 }
 
 document.addEventListener("DOMContentLoaded", initDashboard);

@@ -101,6 +101,7 @@ async function initNav() {
 
   if (signOutBtn) {
     signOutBtn.addEventListener("click", async () => {
+      LoadingOverlay.show("Signing out...");
       await DataStore.logout();
       window.location.href = "../Homepage/login.html";
     });

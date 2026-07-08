@@ -7,7 +7,10 @@
   }
 
   function redirectToDashboard() {
-    window.location.href = "../dashboard/dashboard.html";
+    LoadingOverlay.show("Redirecting to dashboard...");
+    setTimeout(() => {
+      window.location.href = "../dashboard/dashboard.html";
+    }, 400);
   }
 
   function initOAuthButtons() {
@@ -16,10 +19,12 @@
       var text = btn.textContent.trim();
       if (text.includes("Google")) {
         btn.addEventListener("click", function () {
+          LoadingOverlay.show("Connecting to Google...");
           window.location.href = API_BASE + "/auth/google";
         });
       } else if (text.includes("GitHub")) {
         btn.addEventListener("click", function () {
+          LoadingOverlay.show("Connecting to GitHub...");
           window.location.href = API_BASE + "/auth/github";
         });
       }
@@ -30,6 +35,7 @@
     const sessionId = localStorage.getItem(SESSION_KEY);
     if (!sessionId) return;
 
+    LoadingOverlay.show("Checking session...");
     try {
       const res = await fetch(`${API_BASE}/api/auth/session`, {
         headers: { "X-Session-Id": sessionId },
@@ -38,10 +44,13 @@
         const currentPage = window.location.pathname.toLowerCase();
         if (currentPage.includes("/login.html") || currentPage.includes("/signup.html")) {
           redirectToDashboard();
+          return;
         }
       }
+      LoadingOverlay.hide();
     } catch {
       localStorage.removeItem(SESSION_KEY);
+      LoadingOverlay.hide();
     }
   }
 
@@ -60,6 +69,7 @@
         return;
       }
 
+      LoadingOverlay.show("Signing in...");
       try {
         const res = await fetch(`${API_BASE}/api/auth/login`, {
           method: "POST",
@@ -69,6 +79,7 @@
         const data = await res.json();
 
         if (!res.ok) {
+          LoadingOverlay.hide();
           showMessage(data.error || "Login failed.");
           return;
         }
@@ -76,6 +87,7 @@
         localStorage.setItem(SESSION_KEY, data.sessionId);
         redirectToDashboard();
       } catch {
+        LoadingOverlay.hide();
         showMessage("Could not connect to server.");
       }
     });
@@ -107,6 +119,7 @@
         return;
       }
 
+      LoadingOverlay.show("Creating your account...");
       try {
         const res = await fetch(`${API_BASE}/api/auth/signup`, {
           method: "POST",
@@ -116,6 +129,7 @@
         const data = await res.json();
 
         if (!res.ok) {
+          LoadingOverlay.hide();
           showMessage(data.error || "Signup failed.");
           return;
         }
@@ -123,6 +137,7 @@
         localStorage.setItem(SESSION_KEY, data.sessionId);
         redirectToDashboard();
       } catch {
+        LoadingOverlay.hide();
         showMessage("Could not connect to server.");
       }
     });

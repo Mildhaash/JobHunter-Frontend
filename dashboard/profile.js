@@ -9,6 +9,7 @@ const avatarBig = document.getElementById("profileAvatarBig");
 const form = document.getElementById("profileForm");
 
 async function initProfilePage() {
+  LoadingOverlay.show("Loading profile...");
   const user = await DataStore.checkSession();
   if (!user) {
     window.location.href = "../Homepage/login.html";
@@ -17,6 +18,7 @@ async function initProfilePage() {
   await renderNav(null);
   await loadProfile();
   attachProfileListeners();
+  LoadingOverlay.hide();
 }
 
 document.addEventListener("DOMContentLoaded", initProfilePage);

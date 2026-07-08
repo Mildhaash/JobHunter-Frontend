@@ -27,6 +27,7 @@ const dateInput = document.getElementById("dateInput");
 const statusInput = document.getElementById("statusInput");
 
 async function initApplicationsPage() {
+  LoadingOverlay.show("Loading applications...");
   const user = await DataStore.checkSession();
   if (!user) {
     window.location.href = "../Homepage/login.html";
@@ -37,6 +38,7 @@ async function initApplicationsPage() {
   closeModal();
   await renderRows();
   startAutoRefresh();
+  LoadingOverlay.hide();
 }
 
 document.addEventListener("DOMContentLoaded", initApplicationsPage);
