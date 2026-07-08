@@ -146,6 +146,14 @@ const DataStore = (() => {
     });
   }
 
+  async function getGmailAuthUrl() {
+    return await api("/gmail/auth");
+  }
+
+  async function syncGmail() {
+    return await api("/gmail/sync", { method: "POST" });
+  }
+
   captureOAuthSession();
 
   return {
@@ -164,5 +172,7 @@ const DataStore = (() => {
     exportApplicationsAsJson,
     getGmailStatus,
     parseEmail,
+    getGmailAuthUrl,
+    syncGmail,
   };
 })();

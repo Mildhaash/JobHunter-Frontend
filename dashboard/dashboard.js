@@ -154,6 +154,20 @@ async function renderGmailStatus() {
   try {
     const status = await DataStore.getGmailStatus();
     const lastSync = document.getElementById("gmailLastSync");
+    const connectRow = document.getElementById("gmailConnectRow");
+    const syncRow = document.getElementById("gmailSyncRow");
+    const connectStatus = document.getElementById("gmailConnectStatus");
+    const connectedEmail = document.getElementById("gmailConnectedEmail");
+
+    if (status.connected) {
+      if (connectRow) connectRow.style.display = "none";
+      if (syncRow) syncRow.style.display = "flex";
+      if (connectedEmail) connectedEmail.textContent = status.email || "Connected";
+    } else {
+      if (connectRow) connectRow.style.display = "flex";
+      if (syncRow) syncRow.style.display = "none";
+    }
+
     if (lastSync) {
       lastSync.textContent = status.lastSyncAt
         ? `Last synced: ${new Date(status.lastSyncAt).toLocaleString()}`
@@ -165,6 +179,65 @@ async function renderGmailStatus() {
 }
 
 function initGmailButtons() {
+  const connectBtn = document.getElementById("connectGmailBtn");
+  if (connectBtn) {
+    connectBtn.addEventListener("click", async () => {
+      const connectStatus = document.getElementById("gmailConnectStatus");
+      connectBtn.disabled = true;
+      connectBtn.textContent = "Connecting...";
+      if (connectStatus) connectStatus.textContent = "";
+      try {
+        const data = await DataStore.getGmailAuthUrl();
+        if (data.url) {
+          window.location.href = data.url;
+        }
+      } catch (err) {
+        if (connectStatus) {
+          connectStatus.textContent = "Error: " + (err.message || "Failed to connect");
+          connectStatus.style.color = "#e74c3c";
+        }
+        connectBtn.disabled = false;
+        connectBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg> Connect Gmail';
+      }
+    });
+  }
+
+  const syncBtn = document.getElementById("syncGmailBtn");
+  if (syncBtn) {
+    syncBtn.addEventListener("click", async () => {
+      const syncResult = document.getElementById("syncResult");
+      syncBtn.disabled = true;
+      syncBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;vertical-align:middle;margin-right:6px;animation:spin 1s linear infinite"><path d="M21 12a9 9 0 11-3.36-6.93"/></svg> Syncing...';
+      if (syncResult) {
+        syncResult.textContent = "Fetching and parsing emails...";
+        syncResult.style.color = "var(--color-text-muted)";
+      }
+      try {
+        const result = await DataStore.syncGmail();
+        if (result.synced > 0) {
+          if (syncResult) {
+            syncResult.textContent = `Added ${result.synced} application${result.synced > 1 ? "s" : ""} from ${result.total} emails${result.skipped > 0 ? ` (${result.skipped} duplicates skipped)` : ""}`;
+            syncResult.style.color = "#27ae60";
+          }
+          await renderGmailStatus();
+          await renderDashboard();
+        } else {
+          if (syncResult) {
+            syncResult.textContent = result.message || `No new job applications found in ${result.total} emails`;
+            syncResult.style.color = "#e67e22";
+          }
+        }
+      } catch (err) {
+        if (syncResult) {
+          syncResult.textContent = "Error: " + (err.message || "Failed to sync");
+          syncResult.style.color = "#e74c3c";
+        }
+      }
+      syncBtn.disabled = false;
+      syncBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><path d="M21 12a9 9 0 11-3.36-6.93"/><path d="M21 3v6h-6"/></svg> Sync Emails';
+    });
+  }
+
   const parseBtn = document.getElementById("parseEmailBtn");
   if (parseBtn) {
     parseBtn.addEventListener("click", async () => {
@@ -217,6 +290,27 @@ function initGmailButtons() {
   }
 }
 
+function handleGmailCallback() {
+  const params = new URLSearchParams(window.location.search);
+  const gmailStatus = params.get("gmail");
+  if (gmailStatus) {
+    const syncResult = document.getElementById("syncResult") || document.getElementById("parseResult");
+    if (gmailStatus === "connected") {
+      if (syncResult) {
+        syncResult.textContent = "Gmail connected successfully! Click 'Sync Emails' to fetch your job emails.";
+        syncResult.style.color = "#27ae60";
+      }
+    } else if (gmailStatus === "error") {
+      const msg = params.get("msg") || "Connection failed";
+      if (syncResult) {
+        syncResult.textContent = "Error: " + decodeURIComponent(msg);
+        syncResult.style.color = "#e74c3c";
+      }
+    }
+    window.history.replaceState({}, "", window.location.pathname);
+  }
+}
+
 async function initDashboard() {
   const user = await DataStore.checkSession();
   if (!user) {
@@ -224,6 +318,7 @@ async function initDashboard() {
     return;
   }
   await renderNav("dashboard");
+  handleGmailCallback();
   await renderDashboard();
   await renderGmailStatus();
   initGmailButtons();

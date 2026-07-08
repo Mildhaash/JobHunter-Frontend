@@ -1588,6 +1588,43 @@ canvas {
   gap: 8px;
   align-items: center;
 }
+.gmail-auto-sync {
+  margin-bottom: 16px;
+}
+.gmail-connect-row,
+.gmail-sync-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gmail-status-text {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+.gmail-connected-email {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  flex: 1;
+}
+.gmail-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+.gmail-divider::before,
+.gmail-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 @media (max-width: 480px) {
   .forwarding-address-row {
     flex-direction: column;
