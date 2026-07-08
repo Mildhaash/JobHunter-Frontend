@@ -45,24 +45,6 @@ const DataStore = (() => {
   }
 
   // ── Auth ───────────────────────────────────────────────────────────────
-  async function signup(name, email, password) {
-    const data = await api("/auth/signup", {
-      method: "POST",
-      body: JSON.stringify({ name, email, password }),
-    });
-    setSessionId(data.sessionId);
-    return data.user;
-  }
-
-  async function login(email, password) {
-    const data = await api("/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
-    setSessionId(data.sessionId);
-    return data.user;
-  }
-
   async function logout() {
     try {
       await api("/auth/logout", { method: "POST" });
@@ -158,8 +140,6 @@ const DataStore = (() => {
 
   return {
     getSessionId,
-    signup,
-    login,
     logout,
     checkSession,
     getApplications,
