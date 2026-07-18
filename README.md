@@ -72,33 +72,6 @@ A modern, AI-powered job application tracker built with vanilla HTML, CSS, and J
 - **Auth:** Passport.js (Google OAuth 2.0, GitHub OAuth) + bcrypt
 
 ---
- ## Project Structure
-frontend/
-|-- index.html
-|-- shared/
-|   +-- loading.js
-|-- Homepage/
-|   |-- home.html
-|   |-- login.html
-|   |-- signup.html
-|   |-- forgot-password.html
-|   |-- reset-password.html
-|   |-- homepage.css
-|   |-- theme.js
-|   |-- auth.js
-|   |-- forgotPassword.js
-|   +-- resetPassword.js
-+-- dashboard/
-    |-- dashboard.html
-    |-- applications.html
-    |-- profile.html
-    |-- dashboard.css
-    |-- dashboard.js
-    |-- applications.js
-    |-- profile.js
-    |-- nav.js
-    +-- data.js
----
 
 ## Design System
 
