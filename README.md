@@ -211,6 +211,4 @@ Browser Support
 - Firefox (latest)
 - Safari (latest)
 - Mobile browsers (iOS Safari, Chrome for Android)
-License
-ISC
 
