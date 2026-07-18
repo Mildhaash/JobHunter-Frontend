@@ -1,5 +1,7 @@
 (function () {
-  var API_BASE = "https://job-hunter-backend-five.vercel.app";
+  var API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : "https://job-hunter-backend-five.vercel.app";
 
   function getToken() {
     var params = new URLSearchParams(window.location.search);
