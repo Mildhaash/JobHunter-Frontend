@@ -1,10 +1,12 @@
 (function () {
-  const API_BASE = "https://job-hunter-backend-five.vercel.app";
+  var API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : "https://job-hunter-backend-five.vercel.app";
 
   function showMessage(id, text, color) {
     var el = document.getElementById(id);
     if (!el) return;
-    el.textContent = text;
+    el.innerHTML = text;
     el.style.color = color || "inherit";
     el.style.display = "block";
   }
@@ -50,7 +52,15 @@
         }
 
         form.style.display = "none";
-        showMessage("successMsg", data.message || "If an account exists with that email, a reset link has been sent.", "#27ae60");
+
+        if (data.resetUrl) {
+          showMessage("successMsg",
+            data.message + '<br><br><a href="' + data.resetUrl + '" style="color:var(--color-accent-dark);font-weight:600;word-break:break-all;">Click here to reset your password</a>',
+            "#27ae60"
+          );
+        } else {
+          showMessage("successMsg", data.message || "If an account exists with that email, a reset link has been sent.", "#27ae60");
+        }
       } catch {
         LoadingOverlay.hide();
         showMessage("errorMsg", "Could not connect to server.", "#e74c3c");
