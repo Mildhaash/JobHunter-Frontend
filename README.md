@@ -73,7 +73,6 @@ A modern, AI-powered job application tracker built with vanilla HTML, CSS, and J
 
 ---
  ## Project Structure
-
 frontend/
 |-- index.html
 |-- shared/
@@ -99,7 +98,6 @@ frontend/
     |-- profile.js
     |-- nav.js
     +-- data.js
-    
 ---
 
 ## Design System
