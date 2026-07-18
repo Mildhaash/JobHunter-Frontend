@@ -72,35 +72,33 @@ A modern, AI-powered job application tracker built with vanilla HTML, CSS, and J
 - **Auth:** Passport.js (Google OAuth 2.0, GitHub OAuth) + bcrypt
 
 ---
-
 ## Project Structure
 
 frontend/
-├── index.html                    # Redirects to home.html
+├── index.html
 ├── shared/
-│   └── loading.js                # Global loading overlay component
+│   └── loading.js
 ├── Homepage/
-│   ├── home.html                 # Landing page
-│   ├── login.html                # Login page
-│   ├── signup.html               # Signup page
-│   ├── forgot-password.html      # Forgot password page
-│   ├── reset-password.html       # Reset password page
-│   ├── homepage.css              # Homepage styles + design tokens
-│   ├── theme.js                  # Dark/light theme toggle
-│   ├── auth.js                   # Login, signup, OAuth logic
-│   ├── forgotPassword.js         # Forgot password handler
-│   └── resetPassword.js          # Reset password handler
+│   ├── home.html
+│   ├── login.html
+│   ├── signup.html
+│   ├── forgot-password.html
+│   ├── reset-password.html
+│   ├── homepage.css
+│   ├── theme.js
+│   ├── auth.js
+│   ├── forgotPassword.js
+│   └── resetPassword.js
 └── dashboard/
-    ├── dashboard.html            # Main dashboard
-    ├── applications.html         # Applications CRUD page
-    ├── profile.html              # Profile edit page
-    ├── dashboard.css             # Dashboard styles + design tokens
-    ├── dashboard.js              # Charts, stats, Gmail sync
-    ├── applications.js           # CRUD, search, filter, modal logic
-    ├── profile.js                # Profile load/save logic
-    ├── nav.js                    # Dynamic navigation header
-    └── data.js                   # Central API client (DataStore)
-
+    ├── dashboard.html
+    ├── applications.html
+    ├── profile.html
+    ├── dashboard.css
+    ├── dashboard.js
+    ├── applications.js
+    ├── profile.js
+    ├── nav.js
+    └── data.js
 ---
 
 ## Design System
