@@ -1,4 +1,4 @@
-# JobHunter-Frontend
+# JobHunter-Frontend DecodeLabs task 1
 A modern, AI-powered job application tracker built with vanilla HTML, CSS, and JavaScript. Track applications, parse emails with AI, and visualize your job hunt — all from a single dashboard.
 
 **Live Demo:** [job-hunter-frontend-mu.vercel.app](https://job-hunter-frontend-mu.vercel.app)
