@@ -3,7 +3,9 @@
 
 const DataStore = (() => {
   const SESSION_KEY = "jobtracker-session";
-  const API_BASE = "https://job-hunter-backend-five.vercel.app";
+  const API_BASE = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:3000"
+    : "https://job-hunter-backend-five.vercel.app";
 
   function getSessionId() {
     return localStorage.getItem(SESSION_KEY);
