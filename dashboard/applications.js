@@ -33,7 +33,7 @@ async function initApplicationsPage() {
     window.location.href = "../Homepage/login.html";
     return;
   }
-  await renderNav("applications");
+  await renderNav("applications", user);
   attachApplicationListeners();
   closeModal();
   await renderRows();

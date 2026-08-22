@@ -26,13 +26,8 @@ function initTheme() {
   }
 }
 
-async function initNav() {
-  let profile;
-  try {
-    profile = await DataStore.getProfile();
-  } catch {
-    profile = { name: "User", email: "" };
-  }
+async function initNav(user) {
+  let profile = user || { name: "User", email: "", image: "" };
 
   const initialEl = document.getElementById("profileInitial");
   const nameEl = document.querySelector(".dropdown-name");
@@ -116,7 +111,7 @@ async function initNav() {
   initTheme();
 }
 
-async function renderNav(activePage) {
+async function renderNav(activePage, user) {
   const header = document.getElementById("siteHeader");
   if (!header) return;
 
@@ -167,5 +162,5 @@ async function renderNav(activePage) {
     </div>
   `;
 
-  await initNav();
+  await initNav(user);
 }

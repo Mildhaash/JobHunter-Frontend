@@ -3,6 +3,7 @@
 let statusChartInstance = null;
 let monthlyChartInstance = null;
 let interviewChartInstance = null;
+let cachedApps = null;
 
 function themeColor(varName) {
   return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
@@ -143,7 +144,8 @@ function renderInterviewChart(apps) {
 }
 
 async function renderDashboard() {
-  const apps = await DataStore.getApplications();
+  const apps = cachedApps || await DataStore.getApplications();
+  cachedApps = apps;
   renderStats(apps);
   renderStatusChart(apps);
   renderMonthlyChart(apps);
@@ -153,28 +155,32 @@ async function renderDashboard() {
 async function renderGmailStatus() {
   try {
     const status = await DataStore.getGmailStatus();
-    const lastSync = document.getElementById("gmailLastSync");
-    const connectRow = document.getElementById("gmailConnectRow");
-    const syncRow = document.getElementById("gmailSyncRow");
-    const connectStatus = document.getElementById("gmailConnectStatus");
-    const connectedEmail = document.getElementById("gmailConnectedEmail");
-
-    if (status.connected) {
-      if (connectRow) connectRow.style.display = "none";
-      if (syncRow) syncRow.style.display = "flex";
-      if (connectedEmail) connectedEmail.textContent = status.email || "Connected";
-    } else {
-      if (connectRow) connectRow.style.display = "flex";
-      if (syncRow) syncRow.style.display = "none";
-    }
-
-    if (lastSync) {
-      lastSync.textContent = status.lastSyncAt
-        ? `Last synced: ${new Date(status.lastSyncAt).toLocaleString()}`
-        : "Last sync: Never";
-    }
+    renderGmailStatusFromUser(status);
   } catch {
     // silent
+  }
+}
+
+function renderGmailStatusFromUser(status) {
+  const lastSync = document.getElementById("gmailLastSync");
+  const connectRow = document.getElementById("gmailConnectRow");
+  const syncRow = document.getElementById("gmailSyncRow");
+  const connectedEmail = document.getElementById("gmailConnectedEmail");
+
+  if (status.connected || status.gmailConnected) {
+    if (connectRow) connectRow.style.display = "none";
+    if (syncRow) syncRow.style.display = "flex";
+    if (connectedEmail) connectedEmail.textContent = status.email || status.gmailEmail || "Connected";
+  } else {
+    if (connectRow) connectRow.style.display = "flex";
+    if (syncRow) syncRow.style.display = "none";
+  }
+
+  if (lastSync) {
+    const syncTime = status.lastSyncAt;
+    lastSync.textContent = syncTime
+      ? `Last synced: ${new Date(syncTime).toLocaleString()}`
+      : "Last sync: Never";
   }
 }
 
@@ -319,10 +325,10 @@ async function initDashboard() {
     window.location.href = "../Homepage/login.html";
     return;
   }
-  await renderNav("dashboard");
   handleGmailCallback();
+  renderNav("dashboard", user);
   await renderDashboard();
-  await renderGmailStatus();
+  renderGmailStatusFromUser(user);
   initGmailButtons();
   LoadingOverlay.hide();
 }

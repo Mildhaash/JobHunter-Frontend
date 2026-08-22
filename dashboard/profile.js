@@ -58,7 +58,7 @@ function attachProfileListeners() {
     const profile = { name: nameInput.value.trim(), email: emailInput.value.trim() };
     await DataStore.saveProfile(profile);
     avatarBig.textContent = profile.name.charAt(0).toUpperCase();
-    await renderNav(null);
+  await renderNav(null, user);
     saveConfirm.hidden = false;
   });
 }
