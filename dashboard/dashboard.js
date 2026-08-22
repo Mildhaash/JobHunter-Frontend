@@ -223,7 +223,8 @@ function initGmailButtons() {
           await renderDashboard();
         } else {
           if (syncResult) {
-            syncResult.textContent = result.message || `No new job applications found in ${result.total} emails`;
+            const detail = result.skipped > 0 ? ` (${result.skipped} duplicates skipped)` : "";
+            syncResult.textContent = result.message || `No new job applications found in ${result.total} emails${detail}`;
             syncResult.style.color = "#e67e22";
           }
         }
