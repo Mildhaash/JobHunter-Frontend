@@ -239,6 +239,7 @@ function initGmailButtons() {
           syncResult.textContent = "Error: " + (err.message || "Failed to sync");
           syncResult.style.color = "#e74c3c";
         }
+        console.error("Gmail sync failed:", err);
       }
       syncBtn.disabled = false;
       syncBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" style="width:16px;height:16px;vertical-align:middle;margin-right:6px"><path d="M21 12a9 9 0 11-3.36-6.93"/><path d="M21 3v6h-6"/></svg> Sync Emails';
