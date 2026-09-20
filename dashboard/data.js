@@ -138,6 +138,10 @@ const DataStore = (() => {
     return await api("/gmail/sync", { method: "POST" });
   }
 
+  async function disconnectGmail() {
+    return await api("/gmail/disconnect", { method: "POST" });
+  }
+
   captureOAuthSession();
 
   return {
@@ -156,5 +160,6 @@ const DataStore = (() => {
     parseEmail,
     getGmailAuthUrl,
     syncGmail,
+    disconnectGmail,
   };
 })();

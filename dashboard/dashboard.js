@@ -247,6 +247,24 @@ function initGmailButtons() {
     });
   }
 
+  const disconnectBtn = document.getElementById("disconnectGmailBtn");
+  if (disconnectBtn) {
+    disconnectBtn.addEventListener("click", async () => {
+      if (!confirm("Disconnect Gmail? This will remove your Gmail connection.")) return;
+      disconnectBtn.disabled = true;
+      disconnectBtn.textContent = "Disconnecting...";
+      try {
+        await DataStore.disconnectGmail();
+        await renderGmailStatus();
+        await renderDashboard();
+      } catch (err) {
+        console.error("Disconnect Gmail failed:", err);
+      }
+      disconnectBtn.disabled = false;
+      disconnectBtn.textContent = "Disconnect";
+    });
+  }
+
   const parseBtn = document.getElementById("parseEmailBtn");
   if (parseBtn) {
     parseBtn.addEventListener("click", async () => {
