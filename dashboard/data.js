@@ -42,7 +42,7 @@ const DataStore = (() => {
     } catch (e) {
       throw new Error(`Server error (${res.status})`);
     }
-    if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
+    if (!res.ok) throw new Error(body.details || body.error || `Request failed (${res.status})`);
     return body;
   }
 
